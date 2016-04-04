@@ -290,6 +290,7 @@ class CRM_Utils_VersionCheck {
       $this->getPayProcStats();
       $this->getEntityStats();
       $this->getExtensionStats();
+      $this->getMailingStats();
     }
   }
 
@@ -358,6 +359,39 @@ class CRM_Utils_VersionCheck {
    * Add info to the 'extensions' array
    */
   private function getExtensionStats() {
+    // Core components
+    $config = CRM_Core_Config::singleton();
+    foreach ($config->enableComponents as $comp) {
+      $this->stats['extensions'][] = array(
+        'name' => 'org.civicrm.component.' . strtolower($comp),
+        'enabled' => 1,
+        'version' => $this->stats['version'],
+      );
+    }
+    // Contrib extensions
+    $mapper = CRM_Extension_System::singleton()->getMapper();
+    $dao = new CRM_Core_DAO_Extension();
+    $dao->find();
+    while ($dao->fetch()) {
+      $info = $mapper->keyToInfo($dao->full_name);
+      $this->stats['extensions'][] = array(
+        'name' => $dao->full_name,
+        'enabled' => $dao->is_active,
+        'version' => isset($info->version) ? $info->version : NULL,
+      );
+    }
+  }
+
+  /**
+   * Fetch stats about enabled components/extensions
+   * Add info to the 'extensions' array
+   */
+  private function getMailingStats() {
+    /////////////////////////
+    // FIXME: just a copy of getExtensionStats().
+    return;
+
+
     // Core components
     $config = CRM_Core_Config::singleton();
     foreach ($config->enableComponents as $comp) {
