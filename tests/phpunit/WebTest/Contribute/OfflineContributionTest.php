@@ -168,7 +168,7 @@ class WebTest_Contribute_OfflineContributionTest extends CiviSeleniumTestCase {
 
     $this->waitForElementPresent("xpath=//*[@id='ContributionView']/div[2]");
     foreach ($expected as $value) {
-      $this->verifyText("xpath=//*[@id='ContributionView']/div[2]", preg_quote($value));
+      $this->assertElementContainsText("xpath=//*[@id='ContributionView']/div[2]", $value);
     }
 
     // verify if soft credit was created successfully
@@ -179,7 +179,7 @@ class WebTest_Contribute_OfflineContributionTest extends CiviSeleniumTestCase {
     );
 
     foreach ($expected as $value) {
-      $this->verifyText("css=table.crm-soft-credit-listing", preg_quote($value));
+      $this->assertElementContainsText("css=table.crm-soft-credit-listing", $value);
     }
 
     // go to first soft creditor contact view page
@@ -198,7 +198,7 @@ class WebTest_Contribute_OfflineContributionTest extends CiviSeleniumTestCase {
       1 => "{$firstName} {$lastName}",
     );
     foreach ($expected as $value => $label) {
-      $this->verifyText("xpath=//div[@class='view-content']//table[@class='selector row-highlight']//tbody/tr[2]/td[$value]", preg_quote($label));
+      $this->assertElementContainsText("xpath=//div[@class='view-content']//table[@class='selector row-highlight']//tbody/tr[2]/td[$value]", $label);
     }
   }
 
@@ -436,6 +436,33 @@ class WebTest_Contribute_OfflineContributionTest extends CiviSeleniumTestCase {
       'Payment Method' => 'Credit Card',
     );
     $this->webtestVerifyTabularData($expected);
+  }
+
+  public function testDefaultCurrancy() {
+    $this->webtestLogin();
+    $this->enableCurrency(array('GBP', 'EUR'));
+
+    //Create a contact.
+    $firstName = 'John' . substr(sha1(rand()), 0, 7);
+    $lastName = 'Peterson' . substr(sha1(rand()), 0, 7);
+    $this->webtestAddContact($firstName, $lastName);
+
+    //Create contribution for contact
+    $this->waitForElementPresent("css=li#tab_contribute a");
+    $this->click("css=li#tab_contribute a");
+    $this->waitForElementPresent("link=Record Contribution (Check, Cash, EFT ...)");
+    $this->click("link=Record Contribution (Check, Cash, EFT ...)");
+    $this->waitForElementPresent("financial_type_id");
+    $this->select("financial_type_id", "value=1");
+    $this->select("currency", "value=GBP");
+    $this->type("total_amount", "100");
+    $this->click("xpath=//div[@class='ui-dialog-buttonset']//button//span[text()='Save']");
+    $this->waitForAjaxContent();
+    $this->waitForElementPresent("xpath=//table[@class='selector row-highlight']");
+    $this->assertElementContainsText("xpath=//table[@class='selector row-highlight']/tbody/tr//td/a", "£ 100.00");
+    $this->click("xpath=//table[@class='selector row-highlight']/tbody/tr//td/a", "£ 100.00");
+    $this->waitForElementPresent("xpath=//table[@id='info']");
+    $this->assertElementContainsText("xpath=//table[@id='info']/tbody/tr[2]/td[1]", "£ 100.00");
   }
 
 }

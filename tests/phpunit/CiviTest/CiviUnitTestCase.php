@@ -2005,7 +2005,7 @@ class CiviUnitTestCase extends PHPUnit_Extensions_Database_TestCase {
    * Create custom group.
    *
    * @param array $params
-   * @return array|int
+   * @return array
    */
   public function customGroupCreate($params = array()) {
     $defaults = array(
@@ -2268,12 +2268,13 @@ class CiviUnitTestCase extends PHPUnit_Extensions_Database_TestCase {
     $smarty->assign('result', $result);
     $smarty->assign('action', $action);
 
-    if (file_exists('../tests/templates/documentFunction.tpl')) {
-      if (!is_dir("../api/v3/examples/$entity")) {
-        mkdir("../api/v3/examples/$entity");
+    global $civicrm_root;
+    if (file_exists($civicrm_root . '/tests/templates/documentFunction.tpl')) {
+      if (!is_dir($civicrm_root . '/api/v3/examples/$entity')) {
+        mkdir($civicrm_root . '/api/v3/examples/$entity');
       }
-      $f = fopen("../api/v3/examples/$entity/$exampleName.php", "w+b");
-      fwrite($f, $smarty->fetch('../tests/templates/documentFunction.tpl'));
+      $f = fopen($civicrm_root . "/api/v3/examples/$entity/$exampleName.php", "w+b");
+      fwrite($f, $smarty->fetch($civicrm_root . '/tests/templates/documentFunction.tpl'));
       fclose($f);
     }
   }
@@ -2498,6 +2499,7 @@ AND    ( TABLE_NAME LIKE 'civicrm_value_%' )
       'civicrm_participant',
       'civicrm_participant_payment',
       'civicrm_pledge',
+      'civicrm_pledge_payment',
       'civicrm_price_set_entity',
       'civicrm_price_field_value',
       'civicrm_price_field',
@@ -3400,6 +3402,71 @@ AND    ( TABLE_NAME LIKE 'civicrm_value_%' )
       CRM_Price_BAO_PriceSet::addTo('civicrm_' . $component, $componentId, $priceSetId);
     }
     return $this->callAPISuccess('PriceFieldValue', 'get', array('price_field_id' => $priceField->id));
+  }
+
+  /**
+   * Replace the template with a test-oriented template designed to show all the variables.
+   *
+   * @param string $templateName
+   */
+  protected function swapMessageTemplateForTestTemplate($templateName = 'contribution_online_receipt') {
+    $testTemplate = file_get_contents(__DIR__ . '/../../templates/message_templates/' . $templateName . '_html.tpl');
+    CRM_Core_DAO::executeQuery(
+      "UPDATE civicrm_option_group og
+      LEFT JOIN civicrm_option_value ov ON ov.option_group_id = og.id
+      LEFT JOIN civicrm_msg_template m ON m.workflow_id = ov.id
+      SET m.msg_html = '{$testTemplate}'
+      WHERE og.name = 'msg_tpl_workflow_contribution'
+      AND ov.name = '{$templateName}'
+      AND m.is_default = 1"
+    );
+  }
+
+  /**
+   * Reinstate the default template.
+   *
+   * @param string $templateName
+   */
+  protected function revertTemplateToReservedTemplate($templateName = 'contribution_online_receipt') {
+    CRM_Core_DAO::executeQuery(
+      "UPDATE civicrm_option_group og
+      LEFT JOIN civicrm_option_value ov ON ov.option_group_id = og.id
+      LEFT JOIN civicrm_msg_template m ON m.workflow_id = ov.id
+      LEFT JOIN civicrm_msg_template m2 ON m2.workflow_id = ov.id AND m2.is_reserved = 1
+      SET m.msg_html = m2.msg_html
+      WHERE og.name = 'msg_tpl_workflow_contribution'
+      AND ov.name = '{$templateName}'
+      AND m.is_default = 1"
+    );
+  }
+
+  /**
+   * Flush statics relating to financial type.
+   */
+  protected function flushFinancialTypeStatics() {
+    if (isset(\Civi::$statics['CRM_Financial_BAO_FinancialType'])) {
+      unset(\Civi::$statics['CRM_Financial_BAO_FinancialType']);
+    }
+    if (isset(\Civi::$statics['CRM_Contribute_PseudoConstant'])) {
+      unset(\Civi::$statics['CRM_Contribute_PseudoConstant']);
+    }
+    CRM_Contribute_PseudoConstant::flush('financialType');
+    CRM_Contribute_PseudoConstant::flush('membershipType');
+    // Pseudoconstants may be saved to the cache table.
+    CRM_Core_DAO::executeQuery("TRUNCATE civicrm_cache");
+    CRM_Financial_BAO_FinancialType::$_statusACLFt = array();
+    CRM_Financial_BAO_FinancialType::$_availableFinancialTypes = NULL;
+  }
+
+  /**
+   * Set the permissions to the supplied array.
+   *
+   * @param array $permissions
+   */
+  protected function setPermissions($permissions) {
+    CRM_Core_Config::singleton()->userPermissionClass->permissions = $permissions;
+    $this->flushFinancialTypeStatics();
+    CRM_Contact_BAO_Group::getPermissionClause(TRUE);
   }
 
 }

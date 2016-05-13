@@ -1775,18 +1775,18 @@ class CRM_Report_Form extends CRM_Core_Form {
         if (($min !== NULL && strlen($min) > 0) ||
           ($max !== NULL && strlen($max) > 0)
         ) {
-          $min = CRM_Utils_Type::escape($min, $type);
-          $max = CRM_Utils_Type::escape($max, $type);
           $clauses = array();
           if ($min) {
+            $min = CRM_Utils_Type::escape($min, $type);
             if ($op == 'bw') {
               $clauses[] = "( {$field['dbAlias']} >= $min )";
             }
             else {
-              $clauses[] = "( {$field['dbAlias']} < $min )";
+              $clauses[] = "( {$field['dbAlias']} < $min OR {$field['dbAlias']} IS NULL )";
             }
           }
           if ($max) {
+            $max = CRM_Utils_Type::escape($max, $type);
             if ($op == 'bw') {
               $clauses[] = "( {$field['dbAlias']} <= $max )";
             }
@@ -1800,7 +1800,7 @@ class CRM_Report_Form extends CRM_Core_Form {
               $clause = implode(' AND ', $clauses);
             }
             else {
-              $clause = implode(' OR ', $clauses);
+              $clause = '(' . implode('OR', $clauses) . ')';
             }
           }
         }
@@ -1890,14 +1890,22 @@ class CRM_Report_Form extends CRM_Core_Form {
         $clause = "( {$field['dbAlias']} $sqlOP )";
         break;
 
+      case 'eq':
+      case 'neq':
+      case 'ne':
+        //CRM-18457: some custom field passes value in array format against binary operator
+        if (is_array($value) && count($value)) {
+          $value = $value[0];
+        }
+
       default:
-        if ($value !== NULL && strlen($value) > 0) {
+        if ($value !== NULL && $value !== '') {
           if (isset($field['clause'])) {
             // FIXME: we not doing escape here. Better solution is to use two
             // different types - data-type and filter-type
             $clause = $field['clause'];
           }
-          else {
+          elseif (!is_array($value)) {
             $value = CRM_Utils_Type::escape($value, $type);
             $sqlOP = $this->getSQLOperator($op);
             if ($field['type'] == CRM_Utils_Type::T_STRING) {
@@ -1964,41 +1972,6 @@ class CRM_Report_Form extends CRM_Core_Form {
 
     if (!empty($clauses)) {
       return implode(' AND ', $clauses);
-    }
-
-    return NULL;
-  }
-
-  /**
-   * Possibly unused function.
-   *
-   * @todo - could not find any instances where this is called
-   *
-   * @param bool $relative
-   * @param string $from
-   * @param string $to
-   *
-   * @return string|NULL
-   */
-  public function dateDisplay($relative, $from, $to) {
-    list($from, $to) = $this->getFromTo($relative, $from, $to);
-
-    if ($from) {
-      $clauses[] = CRM_Utils_Date::customFormat($from, NULL, array('m', 'M'));
-    }
-    else {
-      $clauses[] = 'Past';
-    }
-
-    if ($to) {
-      $clauses[] = CRM_Utils_Date::customFormat($to, NULL, array('m', 'M'));
-    }
-    else {
-      $clauses[] = 'Today';
-    }
-
-    if (!empty($clauses)) {
-      return implode(' - ', $clauses);
     }
 
     return NULL;

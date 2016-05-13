@@ -122,7 +122,7 @@ class CRM_Dedupe_Merger {
         'rel_table_mailings' => array(
           'title' => ts('Mailings'),
           'tables' => array('civicrm_mailing', 'civicrm_mailing_event_queue', 'civicrm_mailing_event_subscribe'),
-          'url' => CRM_Utils_System::url('civicrm/mailing', 'reset=1&force=1&cid=$cid'),
+          'url' => CRM_Utils_System::url('civicrm/contact/view', 'reset=1&force=1&cid=$cid&selectedChild=mailing'),
         ),
         'rel_table_cases' => array(
           'title' => ts('Cases'),
@@ -675,10 +675,10 @@ INNER JOIN  civicrm_membership membership2 ON membership1.membership_type_id = m
     $msg   = '';
     $stats = CRM_Dedupe_Merger::getMergeStats($cacheKeyString);
     if (!empty($stats['merged'])) {
-      $msg = "{$stats['merged']} " . ts(' Contact(s) were merged. ');
+      $msg = "{$stats['merged']} " . ts('Contact(s) were merged.');
     }
     if (!empty($stats['skipped'])) {
-      $msg .= $stats['skipped'] . ts(' Contact(s) were skipped.');
+      $msg .= $stats['skipped'] . ts('Contact(s) were skipped.');
     }
     return $msg;
   }

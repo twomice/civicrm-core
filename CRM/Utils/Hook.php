@@ -1474,6 +1474,20 @@ abstract class CRM_Utils_Hook {
       'civicrm_triggerInfo'
     );
   }
+  /**
+   * This hook allows changes to the spec of which tables to log.
+   *
+   * @param array $logTableSpec
+   *
+   * @return mixed
+   */
+  public static function alterLogTables(&$logTableSpec) {
+    return self::singleton()->invoke(1, $logTableSpec, $_nullObject,
+      self::$_nullObject, self::$_nullObject, self::$_nullObject,
+      self::$_nullObject,
+      'civicrm_alterLogTables'
+    );
+  }
 
   /**
    * This hook is called when a module-extension is installed.
@@ -2092,6 +2106,31 @@ abstract class CRM_Utils_Hook {
     self::singleton()->invoke(2, $list, $region,
       self::$_nullObject, self::$_nullObject, self::$_nullObject, self::$_nullObject,
       'civicrm_coreResourceList'
+    );
+  }
+
+  /**
+   * This hook is called for bypass a few civicrm urls from IDS check
+   * @param array $skip list of civicrm url;
+   */
+  public static function idsException(&$skip) {
+    return self::singleton()->invoke(1, $skip, self::$_nullObject,
+      self::$_nullObject, self::$_nullObject, self::$_nullObject, self::$_nullObject,
+      'civicrm_idsException'
+    );
+  }
+
+  /**
+   * This hook is called when a geocoder's format method is called.
+   *
+   * @param string $geoProvider
+   * @param array $values
+   * @param SimpleXMLElement $xml
+   */
+  public static function geocoderFormat($geoProvider, &$values, $xml) {
+    return self::singleton()->invoke(3, $geoProvider, $values, $xml,
+      self::$_nullObject, self::$_nullObject, self::$_nullObject,
+      'civicrm_geocoderFormat'
     );
   }
 

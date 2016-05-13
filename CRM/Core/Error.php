@@ -183,15 +183,7 @@ class CRM_Core_Error extends PEAR_ErrorStack {
     }
 
     // create the error array
-    $error = array();
-    $error['callback'] = $pearError->getCallback();
-    $error['code'] = $pearError->getCode();
-    $error['message'] = $pearError->getMessage();
-    $error['mode'] = $pearError->getMode();
-    $error['debug_info'] = $pearError->getDebugInfo();
-    $error['type'] = $pearError->getType();
-    $error['user_info'] = $pearError->getUserInfo();
-    $error['to_string'] = $pearError->toString();
+    $error = self::getErrorDetails($pearError);
 
     // We access connection info via _DB_DATAOBJECT instead
     // of, e.g., calling getDatabaseConnection(), so that we
@@ -259,6 +251,26 @@ class CRM_Core_Error extends PEAR_ErrorStack {
    */
   public static function simpleHandler($pearError) {
 
+    $error = self::getErrorDetails($pearError);
+
+    // ensure that debug does not check permissions since we are in bootstrap
+    // mode and need to print a decent message to help the user
+    CRM_Core_Error::debug('Initialization Error', $error, TRUE, TRUE, FALSE);
+
+    // always log the backtrace to a file
+    self::backtrace('backTrace', TRUE);
+
+    exit(0);
+  }
+
+  /**
+   * this function is used to return error details
+   *
+   * @param $pearError
+   *
+   * @return array $error
+   */
+  public static function getErrorDetails($pearError) {
     // create the error array
     $error = array();
     $error['callback'] = $pearError->getCallback();
@@ -270,14 +282,7 @@ class CRM_Core_Error extends PEAR_ErrorStack {
     $error['user_info'] = $pearError->getUserInfo();
     $error['to_string'] = $pearError->toString();
 
-    // ensure that debug does not check permissions since we are in bootstrap
-    // mode and need to print a decent message to help the user
-    CRM_Core_Error::debug('Initialization Error', $error, TRUE, TRUE, FALSE);
-
-    // always log the backtrace to a file
-    self::backtrace('backTrace', TRUE);
-
-    exit(0);
+    return $error;
   }
 
   /**
@@ -565,7 +570,10 @@ class CRM_Core_Error extends PEAR_ErrorStack {
   }
 
   /**
-   * Display the error message on terminal.
+   * Display the error message on terminal and append it to the log file.
+   *
+   * Provided the user has the 'view debug output' the output should be displayed. In all
+   * cases it should be logged.
    *
    * @param string $message
    * @param bool $out
@@ -629,19 +637,29 @@ class CRM_Core_Error extends PEAR_ErrorStack {
   /**
    * Obtain a reference to the error log.
    *
-   * @param string $comp
+   * @param string $prefix
    *
    * @return Log
    */
-  public static function createDebugLogger($comp = '') {
-    if (!isset(\Civi::$statics[__CLASS__]['logger_file' . $comp])) {
+  public static function createDebugLogger($prefix = '') {
+    self::generateLogFileName($prefix);
+    return Log::singleton('file', \Civi::$statics[__CLASS__]['logger_file' . $prefix], '');
+  }
+
+  /**
+   * Generate the name of the logfile to use and store it as a static.
+   *
+   * This function includes poor man's log file management and a check as to whether the file exists.
+   *
+   * @param string $prefix
+   */
+  protected static function generateLogFileName($prefix) {
+    if (!isset(\Civi::$statics[__CLASS__]['logger_file' . $prefix])) {
       $config = CRM_Core_Config::singleton();
 
-      if ($comp) {
-        $comp = $comp . '.';
-      }
+      $prefixString = $prefix ? ($prefix . '.') : '';
 
-      $fileName = "{$config->configAndLogDir}CiviCRM." . $comp . md5($config->dsn) . '.log';
+      $fileName = $config->configAndLogDir . 'CiviCRM.' . $prefixString . md5($config->dsn) . '.log';
 
       // Roll log file monthly or if greater than 256M
       // note that PHP file functions have a limit of 2G and hence
@@ -658,9 +676,8 @@ class CRM_Core_Error extends PEAR_ErrorStack {
           );
         }
       }
-      \Civi::$statics[__CLASS__]['logger_file' . $comp] = $fileName;
+      \Civi::$statics[__CLASS__]['logger_file' . $prefix] = $fileName;
     }
-    return Log::singleton('file', \Civi::$statics[__CLASS__]['logger_file' . $comp]);
   }
 
   /**
@@ -891,6 +908,7 @@ class CRM_Core_Error extends PEAR_ErrorStack {
    * @throws PEAR_Exception
    */
   public static function exceptionHandler($pearError) {
+    CRM_Core_Error::debug_var('Fatal Error Details', self::getErrorDetails($pearError));
     CRM_Core_Error::backtrace('backTrace', TRUE);
     throw new PEAR_Exception($pearError->getMessage(), $pearError);
   }

@@ -626,7 +626,8 @@ function _civicrm_api3_get_using_query_object($entity, $params, $additional_opti
     $smartGroupCache,
     $getCount,
     $skipPermissions,
-    $mode
+    $mode,
+    $entity
   );
 
   return $entities;
@@ -1499,7 +1500,7 @@ function _civicrm_api3_basic_delete($bao_name, &$params) {
  */
 function _civicrm_api3_custom_data_get(&$returnArray, $checkPermission, $entity, $entity_id, $groupID = NULL, $subType = NULL, $subName = NULL) {
   $groupTree = CRM_Core_BAO_CustomGroup::getTree($entity,
-    CRM_Core_DAO::$_nullObject,
+    NULL,
     $entity_id,
     $groupID,
     NULL,
