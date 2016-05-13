@@ -287,6 +287,7 @@ class CRM_Utils_VersionCheck {
         'MySQL' => CRM_CORE_DAO::singleValueQuery('SELECT VERSION()'),
         'communityMessagesUrl' => Civi::settings()->get('communityMessagesUrl'),
       );
+      $this->getDomainStats();
       $this->getPayProcStats();
       $this->getEntityStats();
       $this->getExtensionStats();
@@ -383,36 +384,32 @@ class CRM_Utils_VersionCheck {
   }
 
   /**
-   * Fetch stats about enabled components/extensions
-   * Add info to the 'extensions' array
+   * Fetch stats about domain
+   * Add info to the 'domain' array
+   */
+  private function getDomainStats() {
+    $params = array(
+      'id' => CRM_Core_Config::domainID(),
+    );
+    CRM_Core_BAO_Domain::retrieve($params, $domain_values);
+    $location_params = array('contact_id' => $domain_values['contact_id']);
+    $location_values = CRM_Core_BAO_Location::getValues($location_params);
+    $relevant_keys = array(
+      'country_id' => 1,
+      'display_text' => 1,
+    );
+    $this->stats['domain']['country'] = array_intersect_key($location_values['address'][1], $relevant_keys);
+  }
+
+  /**
+   * Fetch stats about mailings.
+   * Add info to the 'mailings' array
    */
   private function getMailingStats() {
-    /////////////////////////
-    // FIXME: just a copy of getExtensionStats().
-    return;
-
-
-    // Core components
-    $config = CRM_Core_Config::singleton();
-    foreach ($config->enableComponents as $comp) {
-      $this->stats['extensions'][] = array(
-        'name' => 'org.civicrm.component.' . strtolower($comp),
-        'enabled' => 1,
-        'version' => $this->stats['version'],
-      );
-    }
-    // Contrib extensions
-    $mapper = CRM_Extension_System::singleton()->getMapper();
-    $dao = new CRM_Core_DAO_Extension();
+    $this->stats['mailings'] = array();
+    $dao = new CRM_Mailing_Event_DAO_Delivered();
     $dao->find();
-    while ($dao->fetch()) {
-      $info = $mapper->keyToInfo($dao->full_name);
-      $this->stats['extensions'][] = array(
-        'name' => $dao->full_name,
-        'enabled' => $dao->is_active,
-        'version' => isset($info->version) ? $info->version : NULL,
-      );
-    }
+    $this->stats['mailings']['delivered'] = $dao->N;
   }
 
   /**
