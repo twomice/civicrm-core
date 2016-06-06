@@ -391,14 +391,21 @@ class CRM_Utils_VersionCheck {
     $params = array(
       'id' => CRM_Core_Config::domainID(),
     );
-    CRM_Core_BAO_Domain::retrieve($params, $domain_values);
-    $location_params = array('contact_id' => $domain_values['contact_id']);
-    $location_values = CRM_Core_BAO_Location::getValues($location_params);
-    $relevant_keys = array(
-      'country_id' => 1,
-      'display_text' => 1,
+    $domain_result = civicrm_api3('domain', 'getsingle', $params);
+    $location_params = array(
+      'contact_id' => $domain_result['contact_id'],
     );
-    $this->stats['domain']['country'] = array_intersect_key($location_values['address'][1], $relevant_keys);
+    $location_values = CRM_Core_BAO_Location::getValues($location_params);
+    if (!empty($location_values['address'])) {
+      $address = array_shift($location_values['address']);
+      $country_params = array(
+        'id' => $address['country_id'],
+      );
+      $country_result = civicrm_api3('country', 'getsingle', $country_params);
+      if (!empty($country_result['iso_code'])) {
+        $this->stats['domain_country_iso'] = $country_result['iso_code'];
+      }
+    }
   }
 
   /**
