@@ -291,7 +291,6 @@ class CRM_Utils_VersionCheck {
       $this->getPayProcStats();
       $this->getEntityStats();
       $this->getExtensionStats();
-      $this->getMailingStats();
     }
   }
 
@@ -341,6 +340,7 @@ class CRM_Utils_VersionCheck {
       'CRM_Member_DAO_MembershipBlock' => 'is_active = 1',
       'CRM_Pledge_DAO_Pledge' => 'is_test = 0',
       'CRM_Pledge_DAO_PledgeBlock' => NULL,
+      'CRM_Mailing_Event_DAO_Delivered' => NULL,
     );
     foreach ($tables as $daoName => $where) {
       $dao = new $daoName();
@@ -406,17 +406,6 @@ class CRM_Utils_VersionCheck {
         $this->stats['domain_country_iso'] = $country_result['iso_code'];
       }
     }
-  }
-
-  /**
-   * Fetch stats about mailings.
-   * Add info to the 'mailings' array
-   */
-  private function getMailingStats() {
-    $this->stats['mailings'] = array();
-    $dao = new CRM_Mailing_Event_DAO_Delivered();
-    $dao->find();
-    $this->stats['mailings']['delivered'] = $dao->N;
   }
 
   /**
