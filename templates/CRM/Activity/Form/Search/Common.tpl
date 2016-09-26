@@ -105,8 +105,10 @@
   </td>
 </tr>
 <tr>
-  {* td intentionally left blank to align the 'is test' widget on the right *}
-  <td></td>
+  <td>
+    {$form.activity_details.label}<br/>
+    {$form.activity_details.html|crmAddClass:big}
+  </td>
   <td colspan="2">
     {$form.activity_test.label} {help id="is-test" file="CRM/Contact/Form/Search/Advanced"}
     &nbsp; {$form.activity_test.html}
