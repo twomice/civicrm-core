@@ -600,6 +600,8 @@ FROM civicrm_action_schedule cas
    *   List of error messages.
    */
   protected static function sendReminderEmail($tokenRow, $schedule, $toContactID) {
+    dsm($tokenRow, '$tokenRow');
+
     $toEmail = CRM_Contact_BAO_Contact::getPrimaryEmail($toContactID);
     if (!$toEmail) {
       return array("email_missing" => "Couldn't find recipient's email address.");

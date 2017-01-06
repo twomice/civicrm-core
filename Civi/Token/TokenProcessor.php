@@ -203,6 +203,11 @@ class TokenProcessor {
    *   Fully rendered message, with tokens merged.
    */
   public function render($name, $row) {
+    dsm(__FUNCTION__);
+    dsm($this, 'this');
+    dsm($name, 'name');
+    dsm($row, 'row');
+    
     if (!is_object($row)) {
       $row = $this->getRow($row);
     }
@@ -225,6 +230,7 @@ class TokenProcessor {
     $event->context = $row->context;
     $event->row = $row;
     $event->string = strtr($message['string'], $filteredTokens);
+    dsm($event,'event');
     $this->dispatcher->dispatch(Events::TOKEN_RENDER, $event);
     return $event->string;
   }
