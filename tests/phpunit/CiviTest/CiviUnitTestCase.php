@@ -3653,15 +3653,15 @@ AND    ( TABLE_NAME LIKE 'civicrm_value_%' )
     // Enable component contribute setting
     $contributeSetting = array_merge($params,
       array(
-        'invoicing' => 1,
-        'invoice_prefix' => 'INV_',
-        'credit_notes_prefix' => 'CN_',
-        'due_date' => 10,
-        'due_date_period' => 'days',
-        'notes' => '',
-        'is_email_pdf' => 1,
-        'tax_term' => 'Sales Tax',
-        'tax_display_settings' => 'Inclusive',
+      'invoicing' => 1,
+      'invoice_prefix' => 'INV_',
+      'credit_notes_prefix' => 'CN_',
+      'due_date' => 10,
+      'due_date_period' => 'days',
+      'notes' => '',
+      'is_email_pdf' => 1,
+      'tax_term' => 'Sales Tax',
+      'tax_display_settings' => 'Inclusive',
       )
     );
     return Civi::settings()->set('contribution_invoice_settings', $contributeSetting);
@@ -3785,6 +3785,31 @@ AND    ( TABLE_NAME LIKE 'civicrm_value_%' )
       'label' => 'No. of Person(s)' . substr(sha1(rand()), 0, 7),
       'financial_type_id' => $financialTypeId,
       'amount' => $textFieldAmount,
+    ));
+    // clear cached values in this function.
+    CRM_Price_BAO_PriceField::getOptions(NULL, FALSE, TRUE);
+    return $priceField['id'];
+  }
+
+  /**
+   * Function to add additional price fields to priceset with tax.
+   * @param int $priceSetID
+   * @param int $financialTypeId
+   * @param float $fieldAmount
+   * @param string $htmlType
+   */
+  public function addTaxPriceFields($priceSetID, $financialTypeId, $fieldAmount, $htmlType = 'Text') {
+    $priceField = $this->callAPISuccess('price_field', 'create', array(
+      'price_set_id' => $priceSetID,
+      'label' => 'No. of Person(s)' . substr(sha1(rand()), 0, 7),
+      'html_type' => $htmlType,
+    ));
+    $priceFieldValue = $this->callAPISuccess('price_field_value', 'create', array(
+      'price_set_id' => $priceSetID,
+      'price_field_id' => $priceField['id'],
+      'label' => 'No. of Person(s)' . substr(sha1(rand()), 0, 7),
+      'financial_type_id' => $financialTypeId,
+      'amount' => $fieldAmount,
     ));
     // clear cached values in this function.
     CRM_Price_BAO_PriceField::getOptions(NULL, FALSE, TRUE);

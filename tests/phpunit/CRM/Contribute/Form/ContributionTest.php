@@ -890,6 +890,61 @@ Price Field - Price Field 1        1   $ 100.00      $ 100.00
   /**
    * Test form submission CRM-16228.
    */
+  public function testSubmitContributionPageWithPriceSetMultipleRadiosHavingTaxCRM16228() {
+    $this->enableTaxAndInvoicing();
+    $financialType = $this->createFinancialType();
+    $this->relationForFinancialTypeWithFinancialAccount($financialType['id'], 13.3333);
+    $priceSetID = $this->createContributionPriceSet($financialType['id']);
+    $priceFieldId = $this->addTaxPriceFields($priceSetID, $financialType['id'], '5', 'Radio');
+    $priceFieldId2 = $this->addTaxPriceFields($priceSetID, $financialType['id'], '5', 'Radio');
+
+    $priceFieldValue = $this->callAPISuccess('price_field_value', 'getsingle', array(
+      'price_set_id' => $priceSetID,
+      'price_field_id' => $priceFieldId,
+    ));
+    $priceFieldValueId = $priceFieldValue['id'];
+    $priceFieldValue2 = $this->callAPISuccess('price_field_value', 'getsingle', array(
+      'price_set_id' => $priceSetID,
+      'price_field_id' => $priceFieldId2,
+    ));
+    $priceFieldValueId2 = $priceFieldValue2['id'];
+
+    $form = new CRM_Contribute_Form_Contribution();
+    $submitParams = array(
+      'financial_type_id' => $financialType['id'],
+      'receive_date' => '04/21/2015',
+      'receive_date_time' => '11:27PM',
+      'contact_id' => $this->_individualId,
+      'payment_instrument_id' => array_search('Check', $this->paymentInstruments),
+      'contribution_status_id' => 1,
+      'price_set_id' => $priceSetID,
+      'price_' . $priceFieldId => $priceFieldValueId,
+      'price_' . $priceFieldId2 => $priceFieldValueId2,
+    );
+    var_dump($submitParams);
+    $form->testSubmit($submitParams, CRM_Core_Action::ADD);
+    $contribution = $this->callAPISuccessGetSingle('Contribution',
+      array(
+        'contact_id' => $this->_individualId,
+        'return' => array('tax_amount', 'total_amount'),
+      )
+    );
+    $this->assertEquals('1.34', $contribution['tax_amount'], 'Wrong Tax amount is calculated and stored.'); // 1.33
+    $this->assertEquals('11.34', $contribution['total_amount'], 'Total amount no matching.'); //11.33
+    $lineItem = $this->callAPISuccess('LineItem', 'get', array(
+      'contribution_id' => $contribution['id'],
+    ));
+    $lineTotal = array('5.00', '5.00');
+    $lineTaxAmount = array('.67', '.67');
+    foreach ($lineItem['values'] as $line) {
+      $this->assertEquals(array_pop($lineTaxAmount), CRM_Utils_Array::value('tax_amount', $line), 'Wrong Tax amount is calculated and stored.');
+      $this->assertEquals(array_pop($lineTotal), $line['line_total'], 'Total amount no matching.');
+    }
+  }
+
+  /**
+   * Test form submission CRM-16228.
+   */
   public function testSubmitContributionPageWithPriceSetHaving2PriceFieldTaxCRM16228() {
     $this->enableTaxAndInvoicing();
     $financialType = $this->createFinancialType();
