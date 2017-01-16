@@ -269,6 +269,8 @@ class RecipientBuilder {
   protected function buildRelRepeatPass() {
     $query = $this->prepareQuery(self::PHASE_RELATION_REPEAT);
     $startDateClauses = $this->prepareStartDateClauses();
+dsm($query->toSQL(), '$query');
+dsm($startDateClauses, '$startDateClauses');
 
     // CRM-15376 - do not send our reminders if original criteria no longer applies
     // the first part of the startDateClause array is the earliest the reminder can be sent. If the
@@ -291,6 +293,8 @@ class RecipientBuilder {
 
     // For unknown reasons, we manually insert each row. Why not change
     // selectActionLogFields() to selectIntoActionLog() above?
+dsm($repeatInsert, '$repeatInsert');
+dsm(\CRM_Core_DAO::composeQuery($repeatInsert), 'sql');
 
     $arrValues = \CRM_Core_DAO::executeQuery($repeatInsert)->fetchAll();
     if ($arrValues) {
