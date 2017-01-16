@@ -3,7 +3,7 @@
  +--------------------------------------------------------------------+
  | CiviCRM version 4.7                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2016                                |
+ | Copyright CiviCRM LLC (c) 2004-2017                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2016
+ * @copyright CiviCRM LLC (c) 2004-2017
  */
 require_once 'Mail/mime.php';
 
@@ -3173,10 +3173,11 @@ AND        m.id = %1
   }
 
   /**
-   * Whitelist of possible values for the entity_table field
+   * White-list of possible values for the entity_table field.
+   *
    * @return array
    */
-  public static function mailingGroupEntityTables($context = NULL) {
+  public static function mailingGroupEntityTables() {
     return array(
       CRM_Contact_BAO_Group::getTableName() => 'Group',
       CRM_Mailing_BAO_Mailing::getTableName() => 'Mailing',

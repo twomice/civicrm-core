@@ -3,7 +3,7 @@
  +--------------------------------------------------------------------+
  | CiviCRM version 4.7                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2016                                |
+ | Copyright CiviCRM LLC (c) 2004-2017                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2016
+ * @copyright CiviCRM LLC (c) 2004-2017
  */
 
 /**
@@ -658,19 +658,6 @@ AND civicrm_case.status_id != $closedId";
             ts('more'),
             FALSE,
             'case.actions.primary',
-            'Case',
-            $result->case_id
-          );
-          $casesList[$result->case_id]['moreActions'] = CRM_Core_Action::formLink($actions['moreActions'],
-            $mask,
-            array(
-              'id' => $result->case_id,
-              'cid' => $result->contact_id,
-              'cxt' => $context,
-            ),
-            ts('more'),
-            TRUE,
-            'case.actions.more',
             'Case',
             $result->case_id
           );

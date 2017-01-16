@@ -3,7 +3,7 @@
  +--------------------------------------------------------------------+
  | CiviCRM version 4.7                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2016                                |
+ | Copyright CiviCRM LLC (c) 2004-2017                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -538,6 +538,16 @@ class api_v3_ContributionTest extends CiviUnitTestCase {
     // $this->callAPISuccessGetCount('Contribution', array('invoice_id' => array('LIKE' => '%ly%')), 2);
     // $this->callAPISuccessGetCount('Contribution', array('invoice_id' => array('IN' => array('curly', 'churlish'))),
     // 2);
+  }
+
+  /**
+   * Check the credit note retrieval is case insensitive.
+   */
+  public function testGetCreditNoteCaseInsensitive() {
+    $this->contributionCreate(array('contact_id' => $this->_individualId));
+    $this->contributionCreate(array('creditnote_id' => 'cN1234', 'contact_id' => $this->_individualId, 'invoice_id' => rand(), 'trxn_id' => rand()));
+    $contribution = $this->callAPISuccess('Contribution', 'getsingle', array('creditnote_id' => 'CN1234'));
+    $this->assertEquals($contribution['creditnote_id'], 'cN1234');
   }
 
   /**

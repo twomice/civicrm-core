@@ -4,7 +4,7 @@
  +--------------------------------------------------------------------+
  | CiviCRM version 4.7                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2016                                |
+ | Copyright CiviCRM LLC (c) 2004-2017                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -64,6 +64,14 @@ class CRM_Mailing_Tokens extends \Civi\Token\AbstractTokenSubscriber {
     return !empty($processor->context['mailingId']) || !empty($processor->context['mailing']);
   }
 
+  /**
+   * Prefetch tokens.
+   *
+   * @param \Civi\Token\Event\TokenValueEvent $e
+   *
+   * @return array
+   * @throws \Exception
+   */
   public function prefetch(\Civi\Token\Event\TokenValueEvent $e) {
     $processor = $e->getTokenProcessor();
     $mailing = isset($processor->context['mailing'])

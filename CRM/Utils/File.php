@@ -3,7 +3,7 @@
  +--------------------------------------------------------------------+
  | CiviCRM version 4.7                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2016                                |
+ | Copyright CiviCRM LLC (c) 2004-2017                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2016
+ * @copyright CiviCRM LLC (c) 2004-2017
  */
 
 /**
@@ -438,6 +438,8 @@ class CRM_Utils_File {
   }
 
   /**
+   * Make a valid file name.
+   *
    * @param string $name
    *
    * @return string
@@ -460,8 +462,10 @@ class CRM_Utils_File {
   }
 
   /**
-   * @param $path
-   * @param $ext
+   * Get files for the extension.
+   *
+   * @param string $path
+   * @param string $ext
    *
    * @return array
    */
@@ -801,6 +805,13 @@ HTACCESS;
     return TRUE;
   }
 
+  /**
+   * Format file.
+   *
+   * @param array $param
+   * @param string $fileName
+   * @param array $extraParams
+   */
   public static function formatFile(&$param, $fileName, $extraParams = array()) {
     if (empty($param[$fileName])) {
       return;

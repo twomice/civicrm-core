@@ -4,7 +4,7 @@
  +--------------------------------------------------------------------+
  | CiviCRM version 4.7                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2016                                |
+ | Copyright CiviCRM LLC (c) 2004-2017                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 
 /**
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2016
+ * @copyright CiviCRM LLC (c) 2004-2017
  */
 
 /**
@@ -45,6 +45,9 @@
  */
 class CRM_Activity_Tokens extends \Civi\Token\AbstractTokenSubscriber {
 
+  /**
+   * CRM_Activity_Tokens constructor.
+   */
   public function __construct() {
     parent::__construct('activity', array(
       'activity_id' => ts('Activity ID'),

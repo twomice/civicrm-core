@@ -3,7 +3,7 @@
  +--------------------------------------------------------------------+
  | CiviCRM version 4.7                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2016                                |
+ | Copyright CiviCRM LLC (c) 2004-2017                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2016
+ * @copyright CiviCRM LLC (c) 2004-2017
  */
 
 /**
@@ -298,6 +298,18 @@ class CRM_Utils_System {
     }
 
     return $url;
+  }
+
+  /**
+   * Path of the current page e.g. 'civicrm/contact/view'
+   *
+   * @return string|null
+   */
+  public static function getUrlPath() {
+    if (isset($_GET[CRM_Core_Config::singleton()->userFrameworkURLVar])) {
+      return $_GET[CRM_Core_Config::singleton()->userFrameworkURLVar];
+    }
+    return NULL;
   }
 
   /**

@@ -3,7 +3,7 @@
  +--------------------------------------------------------------------+
  | CiviCRM version 4.7                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2016                                |
+ | Copyright CiviCRM LLC (c) 2004-2017                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2016
+ * @copyright CiviCRM LLC (c) 2004-2017
  */
 class CRM_Report_Form_ActivitySummary extends CRM_Report_Form {
 
@@ -417,6 +417,11 @@ class CRM_Report_Form_ActivitySummary extends CRM_Report_Form {
     }
   }
 
+  /**
+   * Group the fields.
+   *
+   * @param bool $includeSelectCol
+   */
   public function groupBy($includeSelectCol = TRUE) {
     $this->_groupBy = array();
     if (!empty($this->_params['group_bys']) &&

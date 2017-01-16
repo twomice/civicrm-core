@@ -4,7 +4,7 @@
  +--------------------------------------------------------------------+
  | CiviCRM version 4.7                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2016                                |
+ | Copyright CiviCRM LLC (c) 2004-2017                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -65,6 +65,11 @@ class CRM_Member_Tokens extends \Civi\Token\AbstractTokenSubscriber {
       && $processor->context['actionMapping']->getEntity() === 'civicrm_membership';
   }
 
+  /**
+   * Alter action schedule query.
+   *
+   * @param \Civi\ActionSchedule\Event\MailingQueryEvent $e
+   */
   public function alterActionScheduleQuery(\Civi\ActionSchedule\Event\MailingQueryEvent $e) {
     if ($e->mapping->getEntity() !== 'civicrm_membership') {
       return;

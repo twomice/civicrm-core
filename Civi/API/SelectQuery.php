@@ -3,7 +3,7 @@
  +--------------------------------------------------------------------+
  | CiviCRM version 4.7                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2016                                |
+ | Copyright CiviCRM LLC (c) 2004-2017                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -114,7 +114,7 @@ abstract class SelectQuery {
   /**
    * Build & execute the query and return results array
    *
-   * @return array
+   * @return array|int
    * @throws \API_Exception
    * @throws \CRM_Core_Exception
    * @throws \Exception
