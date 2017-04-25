@@ -437,11 +437,12 @@ class CRM_Report_Form_Mailing_Detail extends CRM_Report_Form {
     }
 
     $this->_from .= "
-        INNER JOIN civicrm_mailing_job
-          ON civicrm_mailing_event_queue.job_id = civicrm_mailing_job.id
+        INNER JOIN civicrm_mailing_job {$this->_aliases['civicrm_mailing_job']}
+          ON civicrm_mailing_event_queue.job_id = {$this->_aliases['civicrm_mailing_job']}.id
         INNER JOIN civicrm_mailing {$this->_aliases['civicrm_mailing']}
-          ON civicrm_mailing_job.mailing_id = {$this->_aliases['civicrm_mailing']}.id
-          AND civicrm_mailing_job.is_test = 0";
+          ON {$this->_aliases['civicrm_mailing_job']}.mailing_id = {$this->_aliases['civicrm_mailing']}.id
+          AND {$this->_aliases['civicrm_mailing_job']}.is_test = 0";
+
 
     if ($this->_phoneField) {
       $this->_from .= "
