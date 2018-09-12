@@ -2,3 +2,5 @@
 
 ALTER TABLE civicrm_prevnext_cache
   CHANGE `entity_id2` `entity_id2` int unsigned NULL   COMMENT 'FK to entity table specified in entity_table column.';
+
+

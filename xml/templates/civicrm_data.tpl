@@ -212,7 +212,8 @@ VALUES
    ('wysiwyg_presets'               , '{ts escape="sql"}WYSIWYG Editor Presets{/ts}'             , NULL, 1, 1, 0),
    ('relative_date_filters'         , '{ts escape="sql"}Relative Date Filters{/ts}'              , NULL, 1, 1, 0),
    ('pledge_status'                 , '{ts escape="sql"}Pledge Status{/ts}'                      , NULL, 1, 1, 1),
-   ('environment'                   , '{ts escape="sql"}Environment{/ts}'                        , NULL, 1, 1, 0);
+   ('environment'                   , '{ts escape="sql"}Environment{/ts}'                        , NULL, 1, 1, 0),
+   ('email_on_hold'                 , '{ts escape="sql"}Email On Hold Options{/ts}'              , NULL, 1, 1, 1);
 
 SELECT @option_group_id_pcm            := max(id) from civicrm_option_group where name = 'preferred_communication_method';
 SELECT @option_group_id_act            := max(id) from civicrm_option_group where name = 'activity_type';
@@ -294,6 +295,7 @@ SELECT @option_group_id_date_filter    := max(id) from civicrm_option_group wher
 SELECT @option_group_id_wysiwyg_presets    := max(id) from civicrm_option_group where name = 'wysiwyg_presets';
 SELECT @option_group_id_ps    := max(id) from civicrm_option_group where name = 'pledge_status';
 SELECT @option_group_id_env    := max(id) from civicrm_option_group where name = 'environment';
+SELECT @option_group_id_email_on_hold  := max(id) from civicrm_option_group where name = 'email_on_hold';
 
 SELECT @contributeCompId := max(id) FROM civicrm_component where name = 'CiviContribute';
 SELECT @eventCompId      := max(id) FROM civicrm_component where name = 'CiviEvent';
@@ -1039,7 +1041,12 @@ VALUES
   (@option_group_id_ps, '{ts escape="sql"}Pending{/ts}'    , 2, 'Pending'    , NULL, 0, NULL, 2, NULL, 0, 1, 1, NULL, NULL, NULL),
   (@option_group_id_ps, '{ts escape="sql"}Cancelled{/ts}'  , 3, 'Cancelled'  , NULL, 0, NULL, 3, NULL, 0, 1, 1, NULL, NULL, NULL),
   (@option_group_id_ps, '{ts escape="sql"}In Progress{/ts}', 5, 'In Progress', NULL, 0, NULL, 4, NULL, 0, 1, 1, NULL, NULL, NULL),
-  (@option_group_id_ps, '{ts escape="sql"}Overdue{/ts}'    , 6, 'Overdue'    , NULL, 0, NULL, 5, NULL, 0, 1, 1, NULL, NULL, NULL);
+  (@option_group_id_ps, '{ts escape="sql"}Overdue{/ts}'    , 6, 'Overdue'    , NULL, 0, NULL, 5, NULL, 0, 1, 1, NULL, NULL, NULL),
+
+-- Email On Hold Options
+   (@option_group_id_email_on_hold, '{ts escape="sql"}No{/ts}', '0', 'on_hold_no', NULL, NULL, NULL, 63, NULL, 0, 1, 1, NULL, NULL, NULL),
+   (@option_group_id_email_on_hold, '{ts escape="sql"}On Hold Bounce{/ts}', '1', 'on_hold_bounce', NULL, NULL, NULL, 64, NULL, 0, 1, 1, NULL, NULL, NULL),
+   (@option_group_id_email_on_hold, '{ts escape="sql"}On Hold Opt Out{/ts}', '2', 'on_hold_opt_out', NULL, NULL, NULL, 65, NULL, 0, 1, 1, NULL, NULL, NULL);
 
 -- financial accounts
 SELECT @opval := value FROM civicrm_option_value WHERE name = 'Revenue' and option_group_id = @option_group_id_fat;

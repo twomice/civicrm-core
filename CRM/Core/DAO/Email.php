@@ -71,9 +71,9 @@ class CRM_Core_DAO_Email extends CRM_Core_DAO {
   public $is_billing;
 
   /**
-   * Is this address on bounce hold?
+   * Implicit FK to civicrm_option_value where option_group = email_on_hold.
    *
-   * @var boolean
+   * @var int unsigned
    */
   public $on_hold;
 
@@ -228,21 +228,20 @@ class CRM_Core_DAO_Email extends CRM_Core_DAO {
         ],
         'on_hold' => [
           'name' => 'on_hold',
-          'type' => CRM_Utils_Type::T_BOOLEAN,
+          'type' => CRM_Utils_Type::T_INT,
           'title' => ts('On Hold'),
-          'description' => 'Is this address on bounce hold?',
-          'required' => TRUE,
-          'export' => TRUE,
-          'where' => 'civicrm_email.on_hold',
-          'headerPattern' => '',
-          'dataPattern' => '',
+          'description' => 'Implicit FK to civicrm_option_value where option_group = email_on_hold.',
           'default' => '0',
           'table_name' => 'civicrm_email',
           'entity' => 'Email',
           'bao' => 'CRM_Core_BAO_Email',
           'localizable' => 0,
           'html' => [
-            'type' => 'CheckBox',
+            'type' => 'Select',
+          ],
+          'pseudoconstant' => [
+            'optionGroupName' => 'email_on_hold',
+            'optionEditPath' => 'civicrm/admin/options/email_on_hold',
           ],
         ],
         'is_bulkmail' => [
