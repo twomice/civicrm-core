@@ -73,16 +73,16 @@
       <strong>{ts}This is a TEST transaction{/ts}</strong>
     </div>
   {/if}
-  <tr>
+  <tr class="crm-contribute-contributionview-form-block-displayName">
     <td class="label">{ts}From{/ts}</td>
     <td class="bold"><a href="{crmURL p='civicrm/contact/view' q="cid=$contact_id"}">{$displayName}</a></td>
   </tr>
-  <tr>
+  <tr class="crm-contribute-contributionview-form-block-is_test">
     <td class="label">{ts}Financial Type{/ts}</td>
     <td>{$financial_type}{if $is_test} {ts}(test){/ts} {/if}</td>
   </tr>
   {if $displayLineItems}
-    <tr>
+    <tr class="crm-contribute-contributionview-form-block-displayLineItems">
       <td class="label">{ts}Contribution Amount{/ts}</td>
       <td>{include file="CRM/Price/Page/LineItem.tpl" context="Contribution"}
         {if $contribution_recur_id}
@@ -93,7 +93,7 @@
       </td>
     </tr>
   {else}
-    <tr>
+    <tr class="crm-contribute-contributionview-form-block-total_amount">
       <td class="label">{ts}Total Amount{/ts}</td>
       <td><strong>{$total_amount|crmMoney:$currency}</strong>
         {if $contribution_recur_id}
@@ -107,107 +107,107 @@
     </tr>
   {/if}
   {if $invoicing && $tax_amount}
-    <tr>
+    <tr class="crm-contribute-contributionview-form-block-taxAmount">
       <td class="label">{ts 1=$taxTerm}Total %1 Amount{/ts}</td>
       <td>{$tax_amount|crmMoney:$currency}</td>
     </tr>
   {/if}
   {if $non_deductible_amount}
-    <tr>
+    <tr class="crm-contribute-contributionview-form-block-non_deductible_amount">
       <td class="label">{ts}Non-deductible Amount{/ts}</td>
       <td>{$non_deductible_amount|crmMoney:$currency}</td>
     </tr>
   {/if}
   {if $fee_amount}
-    <tr>
+    <tr class="crm-contribute-contributionview-form-block-fee_amount">
       <td class="label">{ts}Fee Amount{/ts}</td>
       <td>{$fee_amount|crmMoney:$currency}</td>
     </tr>
   {/if}
   {if $net_amount}
-    <tr>
+    <tr class="crm-contribute-contributionview-form-block-net_amount">
       <td class="label">{ts}Net Amount{/ts}</td>
       <td>{$net_amount|crmMoney:$currency}</td>
     </tr>
   {/if}
   {if $isDeferred AND $revenue_recognition_date}
-    <tr>
+    <tr class="crm-contribute-contributionview-form-block-revenue_recognition_date">
       <td class="label">{ts}Revenue Recognition Date{/ts}</td>
       <td>{$revenue_recognition_date|crmDate:"%B, %Y"}</td>
     </tr>
   {/if}
-  <tr>
+  <tr class="crm-contribute-contributionview-form-block-receive_date">
     <td class="label">{ts}Received{/ts}</td>
     <td>{if $receive_date}{$receive_date|crmDate}{else}({ts}not available{/ts}){/if}</td>
   </tr>
   {if $to_financial_account }
-    <tr>
+    <tr class="crm-contribute-contributionview-form-block-to_financial_account">
       <td class="label">{ts}Received Into{/ts}</td>
       <td>{$to_financial_account}</td>
     </tr>
   {/if}
-  <tr>
+  <tr class="crm-contribute-contributionview-form-block-contribution_status_id">
     <td class="label">{ts}Contribution Status{/ts}</td>
     <td {if $contribution_status_id eq 3} class="font-red bold"{/if}>{$contribution_status}
       {if $contribution_status_id eq 2} {if $is_pay_later}: {ts}Pay Later{/ts} {else} : {ts}Incomplete Transaction{/ts} {/if}{/if}</td>
   </tr>
 
   {if $cancel_date}
-    <tr>
+    <tr class="crm-contribute-contributionview-form-block-cancel_date">
       <td class="label">{ts}Cancelled / Refunded Date{/ts}</td>
       <td>{$cancel_date|crmDate}</td>
     </tr>
     {if $cancel_reason}
-      <tr>
+      <tr class="crm-contribute-contributionview-form-block-cancel_reason">
         <td class="label">{ts}Cancellation / Refund Reason{/ts}</td>
         <td>{$cancel_reason}</td>
       </tr>
     {/if}
     {if $refund_trxn_id}
-      <tr>
+      <tr class="crm-contribute-contributionview-form-block-refund_trxn_id">
         <td class="label">{ts}Refund Transaction ID{/ts}</td>
         <td>{$refund_trxn_id}</td>
       </tr>
     {/if}
   {/if}
-  <tr>
+  <tr class="crm-contribute-contributionview-form-block-payment_instrument">
     <td class="label">{ts}Payment Method{/ts}</td>
     <td>{$payment_instrument}{if $payment_processor_name} ({$payment_processor_name}){/if}</td>
   </tr>
 
   {if $payment_instrument eq 'Check'|ts}
-    <tr>
+    <tr class="crm-contribute-contributionview-form-block-check_number">
       <td class="label">{ts}Check Number{/ts}</td>
       <td>{$check_number}</td>
     </tr>
   {/if}
-  <tr>
+  <tr class="crm-contribute-contributionview-form-block-source">
     <td class="label">{ts}Source{/ts}</td>
     <td>{$source}</td>
   </tr>
 
   {if $campaign}
-    <tr>
+    <tr class="crm-contribute-contributionview-form-block-campaign">
       <td class="label">{ts}Campaign{/ts}</td>
       <td>{$campaign}</td>
     </tr>
   {/if}
 
   {if $contribution_page_title}
-    <tr>
+    <tr class="crm-contribute-contributionview-form-block-contribution_page_title">
       <td class="label">{ts}Online Contribution Page{/ts}</td>
       <td>{$contribution_page_title}</td>
     </tr>
   {/if}
   {if $receipt_date}
-    <tr>
+    <tr class="crm-contribute-contributionview-form-block-receipt_date">
       <td class="label">{ts}Receipt Sent{/ts}</td>
       <td>{$receipt_date|crmDate}</td>
     </tr>
   {/if}
   {foreach from=$note item="rec"}
     {if $rec }
-      <tr>
+      <tr class="crm-contribute-contributionview-form-block-note">
         <td class="label">{ts}Note{/ts}</td>
         <td>{$rec}</td>
       </tr>
@@ -215,38 +215,38 @@
   {/foreach}
 
   {if $trxn_id}
-    <tr>
+    <tr class="crm-contribute-contributionview-form-block-trxn_id">
       <td class="label">{ts}Transaction ID{/ts}</td>
       <td>{$trxn_id}</td>
     </tr>
   {/if}
 
   {if $invoice_number}
-    <tr>
+    <tr class="crm-contribute-contributionview-form-block-invoice_number">
       <td class="label">{ts}Invoice Number{/ts}</td>
       <td>{$invoice_number}&nbsp;</td>
     </tr>
   {/if}
 
   {if $invoice_id}
-    <tr>
+    <tr class="crm-contribute-contributionview-form-block-invoice_id">
       <td class="label">{ts}Invoice Reference{/ts}</td>
       <td>{$invoice_id}&nbsp;</td>
     </tr>
   {/if}
 
   {if $thankyou_date}
-    <tr>
+    <tr class="crm-contribute-contributionview-form-block-thankyou_date">
       <td class="label">{ts}Thank-you Sent{/ts}</td>
       <td>{$thankyou_date|crmDate}</td>
     </tr>
   {/if}
-  <tr>
+  <tr class="crm-contribute-contributionview-form-block-payment_details">
     <td class="label">{ts}Payment Details{/ts}</td>
     <td>{include file="CRM/Contribute/Form/PaymentInfoBlock.tpl"}</td>
   </tr>
   {if $addRecordPayment}
-    <tr>
+    <tr class="crm-contribute-contributionview-form-block-payment_info">
       <td class='label'>{ts}Payment Summary{/ts}</td>
       <td id='payment-info'></td>
     </tr>
@@ -261,7 +261,7 @@
     <div class="crm-accordion-body">
       <table class="crm-info-panel crm-soft-credit-listing">
         {foreach from=$softContributions item="softCont"}
-          <tr>
+          <tr class="crm-contribute-contributionview-form-block-softContributions">
             <td>
               <a href="{crmURL p="civicrm/contact/view" q="reset=1&cid=`$softCont.contact_id`"}"
                  title="{ts}View contact record{/ts}">{$softCont.contact_name}
@@ -304,29 +304,29 @@
     </div>
     <div class="crm-accordion-body">
       <table class="crm-info-panel">
-        <tr>
+        <tr class="crm-contribute-contributionview-form-block-pcp_title">
           <td class="label">{ts}Personal Campaign Page{/ts}</td>
           <td><a href="{crmURL p="civicrm/pcp/info" q="reset=1&id=`$pcp_id`"}">{$pcp_title}</a><br/>
             <span class="description">{ts}Contribution was made through this personal campaign page.{/ts}</span>
           </td>
         </tr>
-        <tr>
+        <tr class="crm-contribute-contributionview-form-block-pcp_soft_credit_to_name">
           <td class="label">{ts}Soft Credit To{/ts}</td>
           <td><a href="{crmURL p="civicrm/contact/view" q="reset=1&cid=`$pcp_soft_credit_to_id`"}" id="view_contact"
                  title="{ts}View contact record{/ts}">{$pcp_soft_credit_to_name}</a></td>
         </tr>
-        <tr>
+        <tr class="crm-contribute-contributionview-form-block-pcp_display_in_roll">
           <td class="label">{ts}In Public Honor Roll?{/ts}</td>
           <td>{if $pcp_display_in_roll}{ts}Yes{/ts}{else}{ts}No{/ts}{/if}</td>
         </tr>
         {if $pcp_roll_nickname}
-          <tr>
+          <tr class="crm-contribute-contributionview-form-block-pcp_roll_nickname">
             <td class="label">{ts}Honor Roll Name{/ts}</td>
             <td>{$pcp_roll_nickname}</td>
           </tr>
         {/if}
         {if $pcp_personal_note}
-          <tr>
+          <tr class="crm-contribute-contributionview-form-block-pcp_personal_note">
             <td class="label">{ts}Personal Note{/ts}</td>
             <td>{$pcp_personal_note}</td>
           </tr>
