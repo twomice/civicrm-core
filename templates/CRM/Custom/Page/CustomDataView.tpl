@@ -65,7 +65,7 @@
               {/if}
               {foreach from=$cd_edit.fields item=element key=field_id}
                 <table class="crm-info-panel">
-                  <tr>
+                  <tr id="crm-custom-page-customdataview-block-{$customGroupId}-{$cvID|intval}-{$field_id}">
                     {if $element.options_per_line != 0}
                       <td class="label">{$element.field_title}</td>
                       <td class="html-adjust">
@@ -113,7 +113,7 @@
     </table>
     {else}
       {foreach from=$cd_edit.fields item=element key=field_id}
-        <div class="crm-section">
+        <div class="crm-section" id="crm-custom-page-customdataview-block-{$customGroupId}-0-{$field_id}">
           {if $element.options_per_line != 0}
               <div class="label">{$element.field_title}</div>
               <div class="content">
