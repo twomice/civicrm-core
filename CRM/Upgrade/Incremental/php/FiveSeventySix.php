@@ -32,6 +32,21 @@ class CRM_Upgrade_Incremental_php_FiveSeventySix extends CRM_Upgrade_Incremental
     $this->addTask('Add start_date to civicrm_mailing table', 'addColumn', 'civicrm_mailing', 'start_date', "timestamp NULL DEFAULT NULL COMMENT 'date on which this mailing was started.'");
     $this->addTask('Add end_date to civicrm_mailing table', 'addColumn', 'civicrm_mailing', 'end_date', "timestamp NULL DEFAULT NULL COMMENT 'date on which this mailing was completed.'");
     $this->addTask('Add status to civicrm_mailing table', 'addColumn', 'civicrm_mailing', 'status', "varchar(12) DEFAULT NULL COMMENT 'The status of this Mailing'");
+    $this->addTask('Install SiteToken entity', 'createEntityTable', '5.76.alpha1.SiteToken.entityType.php');
+    $this->addTask('Create "message header" token', 'create_mesage_header_token');
+  }
+
+  public static function create_mesage_header_token() {
+    $token = Civi\Api4\SiteToken::create(FALSE)
+      ->addValue('name', 'message_header')
+      ->addValue('label', 'Message Header')
+      ->addValue('body_html', '<!-- This is the {site.message_header} token HTML content. -->')
+      ->addValue('body_text', '')
+      ->addValue('is_reserved', TRUE)
+      ->addValue('is_active', TRUE)
+      ->execute()
+      ->first();
+    return (!empty($token['id']));
   }
 
 }
