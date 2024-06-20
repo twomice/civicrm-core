@@ -389,10 +389,7 @@ class Container {
       'CRM_Core_DomainTokens',
       []
     ))->addTag('kernel.event_subscriber')->setPublic(TRUE);
-    $container->setDefinition('crm_site_tokens', new Definition(
-      'CRM_Core_SiteTokens',
-      []
-    ))->addTag('kernel.event_subscriber')->setPublic(TRUE);
+  
     $container->setDefinition('crm_token_tidy', new Definition(
       '\Civi\Token\TidySubscriber',
       []
