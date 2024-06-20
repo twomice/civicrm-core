@@ -1,4 +1,5 @@
 <?php
+
 /*
  +--------------------------------------------------------------------+
  | Copyright CiviCRM LLC. All rights reserved.                        |
@@ -8,25 +9,31 @@
  | and copyright information, see https://civicrm.org/licensing       |
  +--------------------------------------------------------------------+
  */
-namespace Civi\Api4;
 
-/**
- * MsgTemplate entity.
- *
- * This is a collection of MsgTemplate, for reuse in import, export, etc.
- * @searchable secondary
- * @since 5.26
- * @package Civi\Api4
- */
-class MessageTemplate extends Generic\DAOEntity {
+namespace Civi\Token;
+
+class GenericEntityTokens extends \CRM_Core_EntityTokens {
 
   /**
-   * @param bool $checkPermissions
-   * @return Action\MessageTemplate\Revert
+   * @var string
    */
-  public static function revert($checkPermissions = TRUE) {
-    return (new Action\MessageTemplate\Revert('MessageTemplate', __FUNCTION__))
-      ->setCheckPermissions($checkPermissions);
+  private string $apiEntityName;
+
+  /**
+   * Class constructor.
+   */
+  public function __construct($entity) {
+    $this->apiEntityName = $entity;
+    parent::__construct();
+  }
+
+  /**
+   * Get the entity name for api v4 calls.
+   *
+   * @return string
+   */
+  protected function getApiEntityName(): string {
+    return $this->apiEntityName;
   }
 
 }
