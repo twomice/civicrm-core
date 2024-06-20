@@ -64,7 +64,6 @@ class CRM_Core_SiteTokens extends AbstractTokenSubscriber {
   /**
    * Get the site tokens available for the domain.
    *
-   * This function will be made protected soon... FIXME: this line is copied from CRM_Core_DomainTokens::getDomainTokenValues, so not sure if it's true here. -TwoMice
    *
    * @param int|null $domainID
    * @param bool $html
@@ -75,7 +74,7 @@ class CRM_Core_SiteTokens extends AbstractTokenSubscriber {
    *
    * @todo - make this non-static & protected. Remove last deprecated fn that calls it.
    */
-  public static function getSiteTokenValues(?int $domainID = NULL, bool $html = TRUE): array {
+  private function getSiteTokenValues(?int $domainID = NULL, bool $html = TRUE): array {
 
     $ret = [];
     $siteTokens = \Civi\Api4\SiteToken::get(TRUE)
