@@ -3,7 +3,7 @@
 return [
   'name' => 'SiteToken',
   'table' => 'civicrm_site_token',
-  'class' => 'CRM_Core_DAO_SiteToken',
+  'token_class' => 'CRM_Core_SiteTokens',
   'getInfo' => fn() => [
     'title' => ts('Site Token'),
     'title_plural' => ts('Site Tokens'),
